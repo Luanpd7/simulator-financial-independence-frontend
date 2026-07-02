@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+import 'evolution_assets.dart';
+
 class SimulationResult {
   final double finalAmount;
   final double inflationAdjustedAmount;
@@ -8,6 +10,7 @@ class SimulationResult {
   final double totalContributed;
   final double totalInterestEarned;
   final int yearsToRetirement;
+  final List<EvolutionAssets> evolutions;
 
   const SimulationResult({
     required this.finalAmount,
@@ -17,6 +20,7 @@ class SimulationResult {
     required this.totalContributed,
     required this.totalInterestEarned,
     required this.yearsToRetirement,
+    required this.evolutions,
   });
 
   factory SimulationResult.fromJson(Map<String, dynamic> json) {
@@ -28,6 +32,10 @@ class SimulationResult {
       totalContributed: json['totalContributed'] ?? 0,
       totalInterestEarned: json['totalInterestEarned'] ?? 0,
       yearsToRetirement: json['yearsToRetirement'] ?? 0,
+      evolutions: (json['evolutions'] as List<dynamic>?)
+          ?.map((e) => EvolutionAssets.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
     );
   }
 
@@ -37,9 +45,6 @@ class SimulationResult {
 Map<String, String> toDisplayMap() {
 
   final currency= NumberFormat.simpleCurrency(locale: 'pt_BR');
-
-
-  final percent = NumberFormat.decimalPercentPattern(locale: 'pt_BR', decimalDigits: 2);
 
   return {
   'Patrimônio': currency.format(finalAmount),

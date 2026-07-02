@@ -24,7 +24,7 @@ void main() {
           appBar: AppBar(
             backgroundColor: Colors.blue.shade700,
             title: const Text(
-              'Simulador Financeiro',
+              'Simulador financeiro para aposentadoria',
               style: TextStyle(color: Colors.white),
             ),
           ),

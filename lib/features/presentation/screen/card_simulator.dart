@@ -1,11 +1,16 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
+
 import 'package:simulator/features/domain/entities/financial_independence.dart';
 import '../../domain/entities/simulation_result.dart';
 import '../../domain/usecases/CalculateSimulationUseCase.dart';
+import '../chart/financialEvolutionChart.dart';
 import '../utils/default_text_form.dart';
 import '../utils/input_formatters.dart';
+
 
 class SimulatorState with ChangeNotifier {
   final CalculateSimulationUseCase _calculateSimulationUseCase;
@@ -33,9 +38,9 @@ class SimulatorState with ChangeNotifier {
 
   SimulationResult? get resultSimulation => _resultSimulation;
 
-  List<Teste>? get list {
+  List<_Content>? get list {
     return resultSimulation?.toDisplayMap().entries.map((e) {
-      return Teste(title: e.key, value: e.value);
+      return _Content(title: e.key, value: e.value);
     }).toList();
   }
 
@@ -70,8 +75,10 @@ class SimulatorState with ChangeNotifier {
               .trim(),
         ),
         annualPercentage: double.parse(
-          annualPercentageController.text .replaceAll('.', '')
-              .replaceAll(',', '.').trim(),
+          annualPercentageController.text
+              .replaceAll('.', '')
+              .replaceAll(',', '.')
+              .trim(),
         ),
         currentAge: !_isTimeInYears
             ? int.parse(currentAgeController.text)
@@ -83,17 +90,15 @@ class SimulatorState with ChangeNotifier {
             ? int.tryParse(timeInYearsController.text)
             : null,
         inflation: double.parse(
-          inflationController.text .replaceAll('.', '')
-              .replaceAll(',', '.').trim(),
+          inflationController.text
+              .replaceAll('.', '')
+              .replaceAll(',', '.')
+              .trim(),
         ),
       );
 
-
-      print('Inflação ${simulation.inflation}');
-      print('Juros anual ${simulation.annualPercentage}');
-
-
       resultSimulation = await _calculateSimulationUseCase.call(simulation);
+
     } catch (e) {
     } finally {
       isLoading = false;
@@ -124,12 +129,12 @@ class SimulatorState with ChangeNotifier {
     timeInYearsController.clear();
     inflationController.clear();
     currentAgeController.clear();
-    resultSimulation  = null;
+    resultSimulation = null;
   }
 }
 
-class Teste {
-  Teste({required this.title, required this.value});
+class _Content {
+  _Content({required this.title, required this.value});
   final String title;
   final dynamic value;
 }
@@ -148,7 +153,6 @@ class ScreenFinancesIndependence extends StatelessWidget {
             spacing: 20,
             children: [
               _CardSimulator(),
-
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 1000),
                 reverseDuration: const Duration(milliseconds: 300),
@@ -180,13 +184,11 @@ class ScreenFinancesIndependence extends StatelessWidget {
 }
 
 class _CardSimulator extends StatelessWidget {
-  const _CardSimulator({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SimulatorState>(
       builder: (context, state, _) {
-        var isAfterCalculation = state.resultSimulation != null;
         return Container(
           width: 750,
           decoration: BoxDecoration(
@@ -213,7 +215,7 @@ class _CardSimulator extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Simulador de independência financeira',
+                      'Simulador financeiro',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -392,13 +394,13 @@ class _ButtonCalculationAndClean extends StatelessWidget {
 }
 
 class _MenuTimer extends StatelessWidget {
-  const _MenuTimer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SimulatorState>(
       builder: (context, state, _) {
         return DropdownMenu(
+          initialSelection: state.isTimeInYears,
           label: Text('Selecionar tempo'),
 
           menuStyle: MenuStyle(
@@ -414,49 +416,6 @@ class _MenuTimer extends StatelessWidget {
           onSelected: (value) {
             state.isTimeInYears = (value ?? false);
           },
-        );
-      },
-    );
-  }
-}
-
-class _InfoResult extends StatelessWidget {
-  const _InfoResult({required this.title, required this.value});
-
-  final String title;
-  final dynamic value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<SimulatorState>(
-      builder: (context, state, _) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: Colors.grey.shade300,
-          ),
-
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
-                    letterSpacing: 1.1,
-                  ),
-                ),
-                Text(
-                  value.toString(),
-                  style: TextStyle(fontSize: 17, color: Colors.black87),
-                ),
-              ],
-            ),
-          ),
         );
       },
     );
@@ -519,8 +478,54 @@ class _CardResult extends StatelessWidget {
                   [],
             ],
           ),
+          FinancialEvolutionChart(
+            evolutions: state.resultSimulation?.evolutions ?? [],
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _InfoResult extends StatelessWidget {
+  const _InfoResult({required this.title, required this.value});
+
+  final String title;
+  final dynamic value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SimulatorState>(
+      builder: (context, state, _) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.grey.shade300,
+          ),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                Text(
+                  value.toString(),
+                  style: TextStyle(fontSize: 17, color: Colors.black87),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
