@@ -14,7 +14,7 @@ class SimulationRepositoryImpl implements SimulationRepository {
       ) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8080/simulation'),
+        Uri.parse('https://simulator-financial-independence-production.up.railway.app/simulation'),
         headers: {
           'Content-Type': 'application/json',
         },
