@@ -13,6 +13,7 @@ Este repositório contém o **front-end** da aplicação e se comunica com uma A
 - **REST API:** utilizada para comunicação entre o front-end e o back-end.
 - **Clean Architecture:** utilizada para organização do projeto e separação de responsabilidades.
 - **Git / GitHub:** utilizados para controle de versão e gerenciamento do código.
+- **JIRA:** Para organização nas demandas.
 
 ## 📋 Funcionalidades
 
