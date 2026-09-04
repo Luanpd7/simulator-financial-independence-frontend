@@ -6,6 +6,8 @@ O usuário informa seus dados financeiros e objetivos de aposentadoria, e a apli
 
 Este repositório contém o **front-end** da aplicação e se comunica com uma API REST desenvolvida em **Go (Golang)**.
 
+- **[Ver publicação no LinkedIn](https://www.linkedin.com/posts/luan-pereira-dias-a327a0253_conclu%C3%AD-mais-um-projeto-pessoal-com-o-activity-7478299174644506624-a626?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD6WM8YBZpZBcOFJu9kQqXyrUpV5Vaoz8g4)**
+
 ## 🚀 Tecnologias
 
 - **Flutter:** utilizado para desenvolvimento da interface da aplicação.
